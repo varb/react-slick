@@ -41,7 +41,7 @@ export var InnerSlider = createReactClass({
     const childrenLen = React.Children.count(this.props.children);
     const currentSlide = this.state.currentSlide;
     for (let i = 0; i < childrenLen; i++) {
-      // if currentSlide is the lastSlide of current frame and 
+      // if currentSlide is the lastSlide of current frame and
       // rest of the active slides are on the left of currentSlide
       // then the following might cause a problem
       if (i >= currentSlide && i < currentSlide + slidesToShow) {
@@ -180,6 +180,7 @@ export var InnerSlider = createReactClass({
       vertical: this.props.vertical,
       slidesToShow: this.props.slidesToShow,
       slidesToScroll: this.props.slidesToScroll,
+      slidesInGrid: this.props.slidesInGrid,
       slideCount: this.state.slideCount,
       trackStyle: this.state.trackStyle,
       variableWidth: this.props.variableWidth

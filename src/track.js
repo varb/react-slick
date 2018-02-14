@@ -44,6 +44,8 @@ var getSlideStyle = function (spec) {
     style.width = spec.slideWidth;
   }
 
+  // console.log(style, spec.slideWidth);
+
   if (spec.fade) {
     style.position = 'relative';
     if (spec.vertical) {
@@ -62,91 +64,84 @@ var getSlideStyle = function (spec) {
 
 const getKey = (child, fallbackKey) => child.key || fallbackKey
 
-var renderSlides = function (spec) {
-  var key;
-  var slides = [];
-  var preCloneSlides = [];
-  var postCloneSlides = [];
-  var childrenCount = React.Children.count(spec.children);
-
-  React.Children.forEach(spec.children, (elem, index) => {
-    let child;
-    var childOnClickOptions = {
-      message: 'children',
-      index: index,
-      slidesToScroll: spec.slidesToScroll,
-      currentSlide: spec.currentSlide
-    };
-
-    // in case of lazyLoad, whether or not we want to fetch the slide
-    if (!spec.lazyLoad || (spec.lazyLoad && spec.lazyLoadedList.indexOf(index) >= 0)) {
-      child = elem;
-    } else {
-      child = (<div></div>);
-    }
-    var childStyle = getSlideStyle(assign({}, spec, {index: index}));
-    const slideClass = child.props.className || ''
-
-    const onClick = function(e) {
-      child.props && child.props.onClick && child.props.onClick(e)
-      if (spec.focusOnSelect) {
-        spec.focusOnSelect(childOnClickOptions)
-      }
-    }
-
-    // push a cloned element of the desired slide
-    slides.push(React.cloneElement(child, {
-      key: 'original' + getKey(child, index),
-      'data-index': index,
-      className: classnames(getSlideClasses(assign({index: index}, spec)), slideClass),
-      tabIndex: '-1',
-      style: assign({outline: 'none'}, child.props.style || {}, childStyle),
-      onClick
-    }));
-
-    // variableWidth doesn't wrap properly.
-    // if slide needs to be precloned or postcloned
-    if (spec.infinite && spec.fade === false) {
-      let preCloneNo = childrenCount - index
-      if (preCloneNo <= spec.slidesToShow + (spec.centerMode ? 1 : 0)
-        && childrenCount !== spec.slidesToShow){
-        key = -preCloneNo;
-        preCloneSlides.push(React.cloneElement(child, {
-          key: 'precloned' + getKey(child, key),
-          'data-index': key,
-          className: classnames(getSlideClasses(assign({index: key}, spec)), slideClass),
-          style: assign({}, child.props.style || {}, childStyle),
-          onClick
-        }));
-      }
-
-      if (childrenCount !== spec.slidesToShow) {
-        key = childrenCount + index;
-        postCloneSlides.push(React.cloneElement(child, {
-          key: 'postcloned' + getKey(child, key),
-          'data-index': key,
-          className: classnames(getSlideClasses(assign({index: key}, spec)), slideClass),
-          style: assign({}, child.props.style || {}, childStyle),
-          onClick
-        }));
-      }
-    }
-  });
-
-  if (spec.rtl) {
-    return preCloneSlides.concat(slides, postCloneSlides).reverse();
-  } else {
-    return preCloneSlides.concat(slides, postCloneSlides);
-  }
-};
-
 export class Track extends React.Component {
+  renderSlides() {
+    const spec = this.props
+    var key;
+    var slides = [];
+    var preCloneSlides = [];
+    var postCloneSlides = [];
+    var childrenCount = React.Children.count(spec.children);
+
+    console.log('spec.children', spec)
+
+    const countLists = Math.ceil(childrenCount / spec.slidesInGrid)
+
+    let lists = []
+
+    for (let i = 0; i < countLists; i++) {
+      lists[i] = []
+
+      let carts = []
+
+      for (let j = 0; j < spec.slidesInGrid; j++) {
+        const curNum = i * spec.slidesInGrid + j;
+
+        carts.push(spec.children[curNum])
+
+        if (curNum == spec.children.length - 1)
+          break
+      }
+
+      lists[i] = <div className="press__list" key={i}>{carts}</div>
+    }
+
+    console.log('lists before mapping', lists)
+
+    React.Children.forEach(lists, (elem, index) => {
+      let child;
+      var childOnClickOptions = {
+        message: 'children',
+        index: index,
+        slidesToScroll: spec.slidesToScroll,
+        currentSlide: spec.currentSlide
+      };
+
+      // in case of lazyLoad, whether or not we want to fetch the slide
+      if (!spec.lazyLoad || (spec.lazyLoad && spec.lazyLoadedList.indexOf(index) >= 0)) {
+        child = elem;
+      } else {
+        child = (<div></div>);
+      }
+      var childStyle = getSlideStyle(assign({}, spec, {index: index}));
+      const slideClass = child.props.className || ''
+
+      const onClick = function(e) {
+        child.props && child.props.onClick && child.props.onClick(e)
+        if (spec.focusOnSelect) {
+          spec.focusOnSelect(childOnClickOptions)
+        }
+      }
+
+      // push a cloned element of the desired slide
+      slides.push(React.cloneElement(child, {
+        key: 'original' + getKey(child, index),
+        'data-index': index,
+        className: classnames(getSlideClasses(assign({index: index}, spec)), slideClass),
+        tabIndex: '-1',
+        style: assign({outline: 'none'}, child.props.style || {}, childStyle),
+        onClick
+      }));
+
+    });
+
+    return slides
+  }
+
   render() {
-    // var slides = renderSlides.call(this, this.props);
-    var slides = renderSlides(this.props)
     return (
       <div className='slick-track' style={this.props.trackStyle}>
-        { slides }
+        { this.renderSlides() }
       </div>
     );
   }

@@ -89,8 +89,8 @@
       "./test-setup.js"
     ],
     "testPathIgnorePatterns": [
-      "/__tests__\/scripts.js",
-      "/__tests__\/testUtils.js"
+      "/__tests__/scripts.js",
+      "/__tests__/testUtils.js"
     ]
   },
   "npmName": "react-slick",

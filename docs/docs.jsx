@@ -8,7 +8,7 @@ export default class Docs extends React.Component {
     return (
       <div className=''>
         <div className='title-bar primary'>
-            <span className='title'>React Slick</span>
+            <span className='title'>React Slick123</span>
         </div>
         <div className=''>
           <div className=''>

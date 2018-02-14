@@ -14,11 +14,24 @@ export default class SimpleSlider extends Component {
   render() {
     const settings = {
       dots: true,
-      infinite: true,
+      infinite: false,
       speed: 500,
-      slidesToShow: 1,
-      slidesToScroll: 1,
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: { slidesInGrid: 2 }
+          // settings: { countItemsInSlide: 2 }
+        }, {
+          breakpoint: 1024,
+          settings: { slidesInGrid: 6 }
+          // settings: { slidesToShow: 6, slidesToScroll: 6 }
+        }, {
+          breakpoint: 100000,
+          settings: 'unslick'
+        }
+      ]
     };
+
     return (
       <div>
         <h2>Custom Slides</h2>
@@ -29,6 +42,8 @@ export default class SimpleSlider extends Component {
           <CustomSlide index={4} />
           <CustomSlide index={5} />
           <CustomSlide index={6} />
+          <CustomSlide index={7} />
+          <CustomSlide index={8} />
         </Slider>
       </div>
     );

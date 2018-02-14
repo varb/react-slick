@@ -10,7 +10,9 @@ var helpers = {
   initialize: function (props) {
     const slickList = ReactDOM.findDOMNode(this.list);
 
-    var slideCount = React.Children.count(props.children);
+    console.log('init', props)
+    const childrenCount = React.Children.count(props.children)
+    var slideCount = Math.ceil(childrenCount / props.slidesInGrid);
     var listWidth = this.getWidth(slickList);
     var trackWidth = this.getWidth(ReactDOM.findDOMNode(this.track));
     var slideWidth;
@@ -56,7 +58,8 @@ var helpers = {
     const slickList = ReactDOM.findDOMNode(this.list);
     // This method has mostly same code as initialize method.
     // Refactor it
-    var slideCount = React.Children.count(props.children);
+    const childrenCount = React.Children.count(props.children)
+    var slideCount = Math.ceil(childrenCount / props.slidesInGrid);
     var listWidth = this.getWidth(slickList);
     var trackWidth = this.getWidth(ReactDOM.findDOMNode(this.track));
     var slideWidth;

@@ -29,6 +29,7 @@ var defaultProps = {
     slide: 'div',
     slidesToShow: 1,
     slidesToScroll: 1,
+    slidesInGrid: 1,
     speed: 500,
     swipe: true,
     swipeToSlide: false,
@@ -42,7 +43,7 @@ var defaultProps = {
     beforeChange: null,
     edgeEvent: null,
     // init: function hook that gets called right before InnerSlider mounts
-    init: null, 
+    init: null,
     swipeEvent: null,
     // nextArrow, prevArrow should react componets
     nextArrow: null,
