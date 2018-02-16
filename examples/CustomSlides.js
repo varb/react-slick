@@ -5,7 +5,11 @@ class CustomSlide extends Component {
   render() {
     const {index, ...props} = this.props
     return (
-      <div {...props}><h3>{index}</h3></div>
+      <div {...props}>
+        <h3>{index}</h3>
+        <div>{index}</div>
+        <div>{index}</div>
+      </div>
     )
   }
 }
@@ -15,7 +19,7 @@ export default class SimpleSlider extends Component {
     const settings = {
       dots: true,
       infinite: false,
-      speed: 500,
+      speed: 300,
       responsive: [
         {
           breakpoint: 768,
@@ -23,7 +27,7 @@ export default class SimpleSlider extends Component {
           // settings: { countItemsInSlide: 2 }
         }, {
           breakpoint: 1024,
-          settings: { slidesInGrid: 6 }
+          settings: { slidesInGrid: 4 }
           // settings: { slidesToShow: 6, slidesToScroll: 6 }
         }, {
           breakpoint: 100000,
@@ -44,6 +48,7 @@ export default class SimpleSlider extends Component {
           <CustomSlide index={6} />
           <CustomSlide index={7} />
           <CustomSlide index={8} />
+          <CustomSlide index={9} />
         </Slider>
       </div>
     );

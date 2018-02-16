@@ -15,13 +15,7 @@ export var getTrackCSS = function(spec) {
   ]);
 
   var trackWidth, trackHeight;
-  const trackChildren = (spec.slideCount + 2 * spec.slidesToShow); // this should probably be getTotalSlides
-  if (!spec.vertical) {
-    trackWidth = getTotalSlides(spec) * spec.slideWidth;
-    trackWidth += spec.slideWidth/2 // this is a temporary hack so that track div doesn't create new row for slight overflow
-  } else {
-    trackHeight = trackChildren * spec.slideHeight;
-  }
+  trackWidth = spec.slideCount * spec.slideWidth;
 
   var style = {
     opacity: 1,
@@ -72,79 +66,17 @@ export var getTrackAnimateCSS = function (spec) {
 // gets total length of track that's on the left side of current slide
 export var getTrackLeft = function (spec) {
 
-  checkSpecKeys(spec, [
-   'slideIndex', 'trackRef', 'infinite', 'centerMode', 'slideCount', 'slidesToShow',
-   'slidesToScroll', 'slideWidth', 'listWidth', 'variableWidth', 'slideHeight']);
-  
-  const {slideIndex, trackRef, infinite, centerMode, slideCount, slidesToShow,
-    slidesToScroll, slideWidth, listWidth, variableWidth, slideHeight, fade, vertical} = spec
+  checkSpecKeys(spec, ['slideIndex', 'slideCount', 'slideWidth'])
 
-  var slideOffset = 0;
-  var targetLeft;
-  var targetSlide;
-  var verticalOffset = 0;
+  const {slideIndex, slideCount, slideWidth} = spec
 
-  if (fade || spec.slideCount === 1) {
-    return 0;
-  }
+  if (slideCount === 1)
+    return 0
 
-  let slidesToOffset = 0
-  if(infinite){
-    slidesToOffset = -getPreClones(spec) // bring active slide to the beginning of visual area
-    // if next scroll doesn't have enough children, just reach till the end of original slides instead of shifting slidesToScroll children
-    if (slideCount % slidesToScroll !== 0 && (slideIndex + slidesToScroll) > slideCount){
-      slidesToOffset = -(slideIndex > slideCount ? (slidesToShow - (slideIndex - slideCount)) : slideCount % slidesToScroll)
-    }
-    // shift current slide to center of the frame
-    if(centerMode){
-      slidesToOffset += parseInt(slidesToShow / 2)
-    }
-  } else {
-    if(slideCount % slidesToScroll !== 0 && slideIndex + slidesToScroll > slideCount){
-      slidesToOffset = slidesToShow - (slideCount % slidesToScroll)
-    }
-    if(centerMode){
-      slidesToOffset = parseInt(slidesToShow / 2)
-    }
-  }
-  slideOffset = slidesToOffset * slideWidth
-  verticalOffset = slidesToOffset * slideHeight
+  let targetLeft = (slideIndex * slideWidth) * -1
 
-  if (!vertical) {
-    targetLeft = ((slideIndex * slideWidth) * -1) + slideOffset;
-  } else {
-    targetLeft = ((slideIndex * slideHeight) * -1) + verticalOffset;
-  }
-
-  if (variableWidth === true) {
-      var targetSlideIndex;
-      var lastSlide = ReactDOM.findDOMNode(trackRef).children[slideCount - 1];
-      var max = -(lastSlide.offsetLeft) + listWidth - lastSlide.offsetWidth;
-      if(slideCount <= slidesToShow || infinite === false) {
-        targetSlide = ReactDOM.findDOMNode(trackRef).childNodes[slideIndex];
-      } else {
-          targetSlideIndex = (slideIndex + slidesToShow);
-          targetSlide = ReactDOM.findDOMNode(trackRef).childNodes[targetSlideIndex];
-      }
-      targetLeft = targetSlide ? targetSlide.offsetLeft * -1 : 0;
-      if (centerMode === true) {
-          if(infinite === false) {
-              targetSlide = ReactDOM.findDOMNode(trackRef).children[slideIndex];
-          } else {
-              targetSlide = ReactDOM.findDOMNode(trackRef).children[(slideIndex + slidesToShow + 1)];
-          }
-
-          if (targetSlide) {
-            targetLeft = targetSlide.offsetLeft * -1 + (listWidth - targetSlide.offsetWidth) / 2;
-          }
-      }
-      if (spec.infinite === false && targetLeft < max) {
-        targetLeft = max;
-      }
-  }
-
-  return targetLeft;
-};
+  return targetLeft
+}
 
 export function getPreClones(spec){
   return spec.slidesToShow + (spec.centerMode ? 1: 0)

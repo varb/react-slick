@@ -73,8 +73,6 @@ export class Track extends React.Component {
     var postCloneSlides = [];
     var childrenCount = React.Children.count(spec.children);
 
-    console.log('spec.children', spec)
-
     const countLists = Math.ceil(childrenCount / spec.slidesInGrid)
 
     let lists = []
@@ -95,8 +93,6 @@ export class Track extends React.Component {
 
       lists[i] = <div className="press__list" key={i}>{carts}</div>
     }
-
-    console.log('lists before mapping', lists)
 
     React.Children.forEach(lists, (elem, index) => {
       let child;

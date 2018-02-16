@@ -10,22 +10,12 @@ var helpers = {
   initialize: function (props) {
     const slickList = ReactDOM.findDOMNode(this.list);
 
-    console.log('init', props)
     const childrenCount = React.Children.count(props.children)
     var slideCount = Math.ceil(childrenCount / props.slidesInGrid);
     var listWidth = this.getWidth(slickList);
     var trackWidth = this.getWidth(ReactDOM.findDOMNode(this.track));
-    var slideWidth;
 
-    if (!props.vertical) {
-      var centerPaddingAdj = props.centerMode && (parseInt(props.centerPadding) * 2);
-      if (props.centerPadding.slice(-1) === '%') {
-        centerPaddingAdj *= listWidth / 100
-      }
-      slideWidth = (this.getWidth(ReactDOM.findDOMNode(this)) - centerPaddingAdj)/props.slidesToShow;
-    } else {
-      slideWidth = this.getWidth(ReactDOM.findDOMNode(this));
-    }
+    const slideWidth = this.getWidth(ReactDOM.findDOMNode(this)) / props.slidesToShow
 
     const slideHeight = this.getHeight(slickList.querySelector('[data-index="0"]'));
     const listHeight = slideHeight * props.slidesToShow;
@@ -62,27 +52,14 @@ var helpers = {
     var slideCount = Math.ceil(childrenCount / props.slidesInGrid);
     var listWidth = this.getWidth(slickList);
     var trackWidth = this.getWidth(ReactDOM.findDOMNode(this.track));
-    var slideWidth;
 
-    if (!props.vertical) {
-      var centerPaddingAdj = props.centerMode && (parseInt(props.centerPadding) * 2);
-      if (props.centerPadding.slice(-1) === '%') {
-        centerPaddingAdj *= listWidth / 100
-      }
-      slideWidth = (this.getWidth(ReactDOM.findDOMNode(this)) - centerPaddingAdj)/props.slidesToShow;
-    } else {
-      slideWidth = this.getWidth(ReactDOM.findDOMNode(this));
-    }
+    const slideWidth = this.getWidth(ReactDOM.findDOMNode(this)) / props.slidesToShow
 
     const slideHeight = this.getHeight(slickList.querySelector('[data-index="0"]'));
     const listHeight = slideHeight * props.slidesToShow;
 
     // pause slider if autoplay is set to false
-    if(!props.autoplay) {
-      this.pause();
-    } else {
-      this.autoPlay();
-    }
+    this.pause()
 
     this.setState({
       slideCount,
@@ -146,55 +123,6 @@ var helpers = {
     var callback;
 
     if (this.props.waitForAnimate && this.state.animating) {
-      return;
-    }
-
-    if (this.props.fade) {
-      currentSlide = this.state.currentSlide;
-
-      // Don't change slide if infinite=false and target slide is out of range
-      if(this.props.infinite === false &&
-        (index < 0 || index >= this.state.slideCount)) {
-        return;
-      }
-
-      //  Shifting targetSlide back into the range
-      if (index < 0) {
-        targetSlide = index + this.state.slideCount;
-      } else if (index >= this.state.slideCount) {
-        targetSlide = index - this.state.slideCount;
-      } else {
-        targetSlide = index;
-      }
-
-      if (this.props.lazyLoad && this.state.lazyLoadedList.indexOf(targetSlide) < 0) {
-        this.setState({
-          lazyLoadedList: this.state.lazyLoadedList.concat(targetSlide)
-        });
-      }
-
-      callback = () => {
-        this.setState({
-          animating: false
-        });
-        if (this.props.afterChange) {
-          this.props.afterChange(targetSlide);
-        }
-        delete this.animationEndCallback;
-      };
-
-      this.setState({
-        animating: true,
-        currentSlide: targetSlide
-      }, function () {
-        this.animationEndCallback = setTimeout(callback, this.props.speed);
-      });
-
-      if (this.props.beforeChange) {
-        this.props.beforeChange(this.state.currentSlide, targetSlide);
-      }
-
-      this.autoPlay();
       return;
     }
 
